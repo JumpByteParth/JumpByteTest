@@ -70,7 +70,7 @@ function jb_plugin_setup_menu(){
  */
 function jb_enqueue_scripts_styles() {
 	// Register.
-	wp_register_style( 'jb_style', plugins_url( 'JumpByte/style.css' ) );
+	wp_register_style( 'jb_style', plugins_url( 'JumpByteTest/style.css' ) );
 	//wp_register_style( 'cupp_admin_css', plugins_url( 'custom-user-profile-photo/css/styles.css' ), false, '1.0.0', 'all' );
 	//wp_register_script( 'cupp_admin_js', plugins_url( 'custom-user-profile-photo/js/scripts.js' ), array( 'jquery' ), '1.0.0', true );
 
@@ -84,7 +84,7 @@ add_action( 'admin_enqueue_scripts', 'jb_enqueue_scripts_styles' );
 
 add_action('wp_enqueue_scripts', 'callback_for_setting_up_scripts');
 function callback_for_setting_up_scripts() {
-	wp_register_style( 'jb_style', plugins_url( 'JumpByte/style.css' ) );
+	wp_register_style( 'jb_style', plugins_url( 'JumpByteTest/style.css' ) );
 	wp_enqueue_style( 'jb_style' );
 }
 
