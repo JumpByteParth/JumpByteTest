@@ -1,6 +1,6 @@
 <?php
 /*
-Plugin Name: JumpByteTest plugin
+Plugin Name: JumpByteTest plugin GIt
 Description: Starting with creating WordPress' Plugin.
 Author: JumpByte
 Version: 1.0
