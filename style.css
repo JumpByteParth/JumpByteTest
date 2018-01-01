@@ -1,0 +1,89 @@
+ /* START - Project Shortcode CSS */
+* {box-sizing: border-box;}
+
+.jb_wrapper {
+    /* border: 2px solid #f76707; */
+    border-radius: 5px;
+    /* background-color: #000000; */
+}
+
+.jb_wrapper > div {
+    border: 2px solid #ffa94d;
+    border-radius: 5px;
+    /* background-color: #ffd8a8; */
+    padding: 1em;
+    /* color: #d9480f; */
+}
+.jb_wrapper h3 a{
+	color: #d9480f;
+}
+.jb_wrapper {
+  /* display: grid; */
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 10px;
+}
+ /* END - Project Shortcode CSS */
+
+  /* START - Team Shortcode CSS */
+*, *:before, *:after {
+    box-sizing: inherit;
+  }
+  
+  .column {
+    /* float: left;
+    width: 33.3%; */
+    margin-bottom: 16px;
+    padding: 0 8px;
+  }
+  
+  @media (max-width: 650px) {
+    .column {
+      width: 100%;
+      display: block;
+    }
+  }
+  
+  .card {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  }
+  
+  .container {
+    padding: 0 16px;
+  }
+  
+  .container::after, .row::after {
+    content: "";
+    clear: both;
+    display: table;
+  }
+  
+  .title {
+    color: grey;
+  }
+/*  
+  .button {
+    border: none;
+    outline: 0;
+    display: inline-block;
+    padding: 8px;
+    color: white;
+    background-color: #000;
+    text-align: center;
+    cursor: pointer;
+    width: 100%;
+  }
+  
+  .button:hover {
+    background-color: #555;
+  }
+  */
+   /* END - Team Shortcode CSS */
+
+   /* Pagination - AJAX */
+  .cvf_pag_loading {padding: 20px;}
+  .cvf-universal-pagination ul {margin: 0; padding: 0;}
+  .cvf-universal-pagination ul li {display: inline; margin: 3px; padding: 4px 8px; background: #FFF; color: black; }
+  .cvf-universal-pagination ul li.active:hover {cursor: pointer; background: #1E8CBE; color: white; }
+  .cvf-universal-pagination ul li.inactive {background: #7E7E7E;}
+  .cvf-universal-pagination ul li.selected {background: #1E8CBE; color: white;}
+   /* END Pagination - AJAX*/
