@@ -13,7 +13,37 @@ if( !defined( 'ABSPATH' ) ){
     exit; // Exit if accessed directly
 }
 
+/* plugin install and uninstall hooks */
+register_activation_hook(__FILE__, 'jb_activate_plugin' );
 
+/*
+ * Function to add option when Plugin installed.
+ */
+function jb_activate_plugin(){
+	if( !get_option('jb_posttype_backup') ){
+		add_option('jb_posttype_backup');
+	}
+	if( !get_option('jb_post_types') ){
+		    /* post options */                  
+			$options6 = array('sfsi_show_Onposts'=>'no',
+			'sfsi_show_Onbottom'=>'no',
+			'sfsi_icons_postPositon'=>'source',
+			'sfsi_icons_alignment'=>'center-right',
+			'sfsi_rss_countsDisplay'=>'no',
+			'sfsi_textBefor_icons'=>'Please follow and like us:',
+			'sfsi_icons_DisplayCounts'=>'no',
+			'sfsi_rectsub'=>'yes',
+			'sfsi_rectfb'=>'yes',
+			'sfsi_rectgp'=>'yes',
+			'sfsi_rectshr'=>'no',
+			'sfsi_recttwtr'=>'yes',
+			'sfsi_rectpinit'=>'yes',
+			'sfsi_rectfbshare'=>'yes'
+		);
+		add_option('jb_post_types',  serialize($options6));
+	}
+}
+/* end function  */
 
 
 
@@ -120,7 +150,7 @@ function jb_project_shortcode_function($atts) {
 					<p>
 					<?php
 						the_content( sprintf(
-							__( 'Continue reading<span class="screen-reader-text"> "%s"</span>', 'twentyseventeen' ),
+							__( 'Continue reading<span class="screen-reader-text"> "%s"</span>', 'jumpbytetest' ),
 							get_the_title()
 						) );
 					?>
@@ -154,7 +184,7 @@ function jb_project_shortcode_function($atts) {
 						if( '' != $project_team ){
 							?>
 							<p><b>
-								<?php _e( 'Teams assign to this Project', 'twentyseventeen' ); ?>
+								<?php _e( 'Teams assign to this Project', 'jumpbytetest' ); ?>
 							</b></p>
 							<?php
 							$project_count = count($project_team);
@@ -165,13 +195,13 @@ function jb_project_shortcode_function($atts) {
 								$team_link = get_permalink($val);
 								?>
 								<p><a href="<?php echo $team_link; ?>">
-									<?php _e( $team_title, 'twentyseventeen' ); ?>
+									<?php _e( $team_title, 'jumpbytetest' ); ?>
 								</a></p>
 								<?php
 							}
 							?>
 							<p><b>
-								<?php _e( 'Teams Members', 'twentyseventeen' ); ?>
+								<?php _e( 'Teams Members', 'jumpbytetest' ); ?>
 							</b></p>
 							<?php
 							for ($i=0; $i < $project_count; $i++) {			 
@@ -188,13 +218,13 @@ function jb_project_shortcode_function($atts) {
 									}
 								}else{
 									?>
-									<p><b><?php _e( 'No Team Found !!!', 'twentyseventeen' ); ?></b></p>
+									<p><b><?php _e( 'No Team Found !!!', 'jumpbytetest' ); ?></b></p>
 									<?php
 								}
 							}
 						}else{
 							?>
-							<p><b><?php _e( 'Nothing Found !!!', 'twentyseventeen' ); ?></b></p>
+							<p><b><?php _e( 'Nothing Found !!!', 'jumpbytetest' ); ?></b></p>
 							<?php
 						}
 					?>
@@ -241,7 +271,7 @@ function jb_team_shortcode_function($atts) {
 							if( '' !=$selected ){
 								?>
 								<p class="test">
-									<b><?php _e( 'Team Members', 'twentyseventeen' ); ?></b>
+									<b><?php _e( 'Team Members', 'jumpbytetest' ); ?></b>
 								</p>
 								<?php
 								foreach($selected as $team){
@@ -254,7 +284,7 @@ function jb_team_shortcode_function($atts) {
 								}
 							}else{
 								?>
-								<p><b><?php _e( 'No Team Found !!!', 'twentyseventeen' ); ?></b></p>
+								<p><b><?php _e( 'No Team Found !!!', 'jumpbytetest' ); ?></b></p>
 								<?php
 							}
 							?>
@@ -290,11 +320,15 @@ add_shortcode('jb-client-shortcode', 'jb_client_shortcode_function');
 
 if( !function_exists('jb_init') ){
 	function jb_init(){
-		$social_option = unserialize(get_option('jb_test_option',false));
+		//update_option( 'jb_post_types', '', $false );
+		
+		//$social_option = unserialize(get_option('jb_post_types',false));
+		$social_option = unserialize(get_option('jb_posttype_backup',false));
 		//$social_option = get_option('sfsi_section6_options',TRUE);
-		echo "<pre>";
-		print_r($social_option);
-		echo "</pre>";
+		if( '' != $social_option ){
+			echo "<pre>";print_r($social_option);echo "</pre>";
+		}
+		
 	   ?>
 	   <div class="wrapper">
 		<div><h1>JumpByte Overview</h1></div>
@@ -312,14 +346,66 @@ if( !function_exists('jb_init') ){
 	}
 }
 
+/*
+ * Custom Post type Multiple
+ */
+
+function create_post_type_multiple() {
+	//$post_array = ['one','two','three'];
+	if( !empty( $post_array ) && '' != $post_array ){
+		foreach( $post_array as $parray => $value ){
+			$value = ucfirst( $value );
+			$labels = array(
+				'name'               => _x( $value.'s', 'post type general name', 'jumpbytetest' ),
+				'singular_name'      => _x( $value, 'post type singular name', 'jumpbytetest' ),
+				'menu_name'          => _x( $value, 'admin menu', 'jumpbytetest' ),
+				'name_admin_bar'     => _x( $value.'s', 'add new on admin bar', 'jumpbytetest' ),
+				'add_new'            => _x( 'Add '.$value, $value, 'jumpbytetest' ),
+				'add_new_item'       => __( 'Add New '.$value, 'jumpbytetest' ),
+				'new_item'           => __( 'New '.$value, 'jumpbytetest' ),
+				'edit_item'          => __( 'Edit '.$value, 'jumpbytetest' ),
+				'view_item'          => __( 'View '.$value, 'jumpbytetest' ),
+				'all_items'          => __( 'All '.$value.'s', 'jumpbytetest' ),
+				'search_items'       => __( 'Search ', 'jumpbytetest' ),
+				'parent_item_colon'  => __( 'Parent :', 'jumpbytetest' ),
+				'not_found'          => __( 'No '.$value.' found.', 'jumpbytetest' ),
+				'not_found_in_trash' => __( 'No '.$value.' found in Trash.', 'jumpbytetest' )
+			);
+		
+			$args = array(
+				'labels'             => $labels,
+				'description'        => __( 'Description.', 'jumpbytetest' ),
+				'public'             => true,
+				'publicly_queryable' => true,
+				'show_ui'            => true,
+				'show_in_menu'       => true,
+				'query_var'          => true,
+				'rewrite'            => array( 'slug' => $value ),
+				'taxonomies' => array('post_tag','category'),
+				'capability_type'    => 'post',
+				'has_archive'        => true,
+				'hierarchical'       => false,
+				'menu_position'      => null,
+				'supports'           => array( 'title', 'editor', 'author', 'thumbnail', 'excerpt', 'comments' )
+			);
+		
+			register_post_type( $value, $args );
+		}
+	}
+	
+}
+
+add_action( 'init', 'create_post_type_multiple' );
+/* END Custom Post type Multiple*/
+
 if( !function_exists('jb_setting') ){
 	function jb_setting(){
        echo "<h1>JumpByte Setting</h1>";
        $post_types = get_post_types();
-       echo "<pre>";print_r($post_types);echo "</pre>";
+       //echo "<pre>";print_r($post_types);echo "</pre>";
        foreach ($post_types as $post_type => $value) {
 			if( $value != 'post' && $value != 'page' && $value != 'attachment' && $value != 'revision' && $value != 'custom_css' && $value != 'customize_changeset' && $value != 'oembed_cache' && $value != 'nav_menu_item' ){
-				
+
 			}
        }
 	}
@@ -359,25 +445,25 @@ add_action( 'init', 'create_post_type_team' );
  */
 function create_post_type_team() {
 	$labels = array(
-		'name'               => _x( 'Teams', 'post type general name', 'twentyseventeen' ),
-		'singular_name'      => _x( 'Team', 'post type singular name', 'twentyseventeen' ),
-		'menu_name'          => _x( 'Teams', 'admin menu', 'twentyseventeen' ),
-		'name_admin_bar'     => _x( 'Teams', 'add new on admin bar', 'twentyseventeen' ),
-		'add_new'            => _x( 'Add New', 'team', 'twentyseventeen' ),
-		'add_new_item'       => __( 'Add New Team', 'twentyseventeen' ),
-		'new_item'           => __( 'New Team', 'twentyseventeen' ),
-		'edit_item'          => __( 'Edit Team', 'twentyseventeen' ),
-		'view_item'          => __( 'View Team', 'twentyseventeen' ),
-		'all_items'          => __( 'All Teams Members', 'twentyseventeen' ),
-		'search_items'       => __( 'Search ', 'twentyseventeen' ),
-		'parent_item_colon'  => __( 'Parent :', 'twentyseventeen' ),
-		'not_found'          => __( 'No Team Member found.', 'twentyseventeen' ),
-		'not_found_in_trash' => __( 'No Team Member found in Trash.', 'twentyseventeen' )
+		'name'               => _x( 'Teams', 'post type general name', 'jumpbytetest' ),
+		'singular_name'      => _x( 'Team', 'post type singular name', 'jumpbytetest' ),
+		'menu_name'          => _x( 'Teams', 'admin menu', 'jumpbytetest' ),
+		'name_admin_bar'     => _x( 'Teams', 'add new on admin bar', 'jumpbytetest' ),
+		'add_new'            => _x( 'Add New', 'team', 'jumpbytetest' ),
+		'add_new_item'       => __( 'Add New Team', 'jumpbytetest' ),
+		'new_item'           => __( 'New Team', 'jumpbytetest' ),
+		'edit_item'          => __( 'Edit Team', 'jumpbytetest' ),
+		'view_item'          => __( 'View Team', 'jumpbytetest' ),
+		'all_items'          => __( 'All Teams Members', 'jumpbytetest' ),
+		'search_items'       => __( 'Search ', 'jumpbytetest' ),
+		'parent_item_colon'  => __( 'Parent :', 'jumpbytetest' ),
+		'not_found'          => __( 'No Team Member found.', 'jumpbytetest' ),
+		'not_found_in_trash' => __( 'No Team Member found in Trash.', 'jumpbytetest' )
 	);
 
 	$args = array(
 		'labels'             => $labels,
-                'description'        => __( 'Description.', 'twentyseventeen' ),
+                'description'        => __( 'Description.', 'jumpbytetest' ),
 		'public'             => true,
 		'publicly_queryable' => true,
 		'show_ui'            => true,
@@ -402,25 +488,25 @@ add_action( 'init', 'create_post_type_project' );
  */
 function create_post_type_project() {
 	$labels = array(
-		'name'               => _x( 'Projects', 'post type general name', 'twentyseventeen' ),
-		'singular_name'      => _x( 'Project', 'post type singular name', 'twentyseventeen' ),
-		'menu_name'          => _x( 'Projects', 'admin menu', 'twentyseventeen' ),
-		'name_admin_bar'     => _x( 'Project', 'add new on admin bar', 'twentyseventeen' ),
-		'add_new'            => _x( 'Add New Project', 'project', 'twentyseventeen' ),
-		'add_new_item'       => __( 'Add New Project', 'twentyseventeen' ),
-		'new_item'           => __( 'New Project', 'twentyseventeen' ),
-		'edit_item'          => __( 'Edit Project', 'twentyseventeen' ),
-		'view_item'          => __( 'View Project', 'twentyseventeen' ),
-		'all_items'          => __( 'All Projects', 'twentyseventeen' ),
-		'search_items'       => __( 'Search Projects', 'twentyseventeen' ),
-		'parent_item_colon'  => __( 'Parent Projects:', 'twentyseventeen' ),
-		'not_found'          => __( 'No Projects found.', 'twentyseventeen' ),
-		'not_found_in_trash' => __( 'No Projects found in Trash.', 'twentyseventeen' )
+		'name'               => _x( 'Projects', 'post type general name', 'jumpbytetest' ),
+		'singular_name'      => _x( 'Project', 'post type singular name', 'jumpbytetest' ),
+		'menu_name'          => _x( 'Projects', 'admin menu', 'jumpbytetest' ),
+		'name_admin_bar'     => _x( 'Project', 'add new on admin bar', 'jumpbytetest' ),
+		'add_new'            => _x( 'Add New Project', 'project', 'jumpbytetest' ),
+		'add_new_item'       => __( 'Add New Project', 'jumpbytetest' ),
+		'new_item'           => __( 'New Project', 'jumpbytetest' ),
+		'edit_item'          => __( 'Edit Project', 'jumpbytetest' ),
+		'view_item'          => __( 'View Project', 'jumpbytetest' ),
+		'all_items'          => __( 'All Projects', 'jumpbytetest' ),
+		'search_items'       => __( 'Search Projects', 'jumpbytetest' ),
+		'parent_item_colon'  => __( 'Parent Projects:', 'jumpbytetest' ),
+		'not_found'          => __( 'No Projects found.', 'jumpbytetest' ),
+		'not_found_in_trash' => __( 'No Projects found in Trash.', 'jumpbytetest' )
 	);
 
 	$args = array(
 		'labels'             => $labels,
-                'description'        => __( 'Description.', 'twentyseventeen' ),
+                'description'        => __( 'Description.', 'jumpbytetest' ),
 		'public'             => true,
 		'publicly_queryable' => true,
 		'show_ui'            => true,
@@ -445,25 +531,25 @@ add_action( 'init', 'create_post_type_client' );
  */
 function create_post_type_client() {
 	$labels = array(
-		'name'               => _x( 'Clients', 'post type general name', 'twentyseventeen' ),
-		'singular_name'      => _x( 'Client', 'post type singular name', 'twentyseventeen' ),
-		'menu_name'          => _x( 'Clients', 'admin menu', 'twentyseventeen' ),
-		'name_admin_bar'     => _x( 'Client', 'add new on admin bar', 'twentyseventeen' ),
-		'add_new'            => _x( 'Add New', 'client', 'twentyseventeen' ),
-		'add_new_item'       => __( 'Add New Client', 'twentyseventeen' ),
-		'new_item'           => __( 'New Client', 'twentyseventeen' ),
-		'edit_item'          => __( 'Edit Client', 'twentyseventeen' ),
-		'view_item'          => __( 'View Client', 'twentyseventeen' ),
-		'all_items'          => __( 'All Clients', 'twentyseventeen' ),
-		'search_items'       => __( 'Search Clients', 'twentyseventeen' ),
-		'parent_item_colon'  => __( 'Parent Clients:', 'twentyseventeen' ),
-		'not_found'          => __( 'No Clients found.', 'twentyseventeen' ),
-		'not_found_in_trash' => __( 'No Clients found in Trash.', 'twentyseventeen' )
+		'name'               => _x( 'Clients', 'post type general name', 'jumpbytetest' ),
+		'singular_name'      => _x( 'Client', 'post type singular name', 'jumpbytetest' ),
+		'menu_name'          => _x( 'Clients', 'admin menu', 'jumpbytetest' ),
+		'name_admin_bar'     => _x( 'Client', 'add new on admin bar', 'jumpbytetest' ),
+		'add_new'            => _x( 'Add New', 'client', 'jumpbytetest' ),
+		'add_new_item'       => __( 'Add New Client', 'jumpbytetest' ),
+		'new_item'           => __( 'New Client', 'jumpbytetest' ),
+		'edit_item'          => __( 'Edit Client', 'jumpbytetest' ),
+		'view_item'          => __( 'View Client', 'jumpbytetest' ),
+		'all_items'          => __( 'All Clients', 'jumpbytetest' ),
+		'search_items'       => __( 'Search Clients', 'jumpbytetest' ),
+		'parent_item_colon'  => __( 'Parent Clients:', 'jumpbytetest' ),
+		'not_found'          => __( 'No Clients found.', 'jumpbytetest' ),
+		'not_found_in_trash' => __( 'No Clients found in Trash.', 'jumpbytetest' )
 	);
 
 	$args = array(
 		'labels'             => $labels,
-                'description'        => __( 'Description.', 'twentyseventeen' ),
+                'description'        => __( 'Description.', 'jumpbytetest' ),
 		'public'             => true,
 		'publicly_queryable' => true,
 		'show_ui'            => true,
