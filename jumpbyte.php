@@ -145,7 +145,7 @@ function jb_project_shortcode_function($atts) {
 				<div>
 					<?php the_title( '<h3 class=""><b><a href="' . esc_url( get_permalink() ) . '" rel="bookmark">', '</b></a></h3>' ); ?>
 					<a href="<?php the_permalink(); ?>">
-						<?php the_post_thumbnail( 'twentyseventeen-featured-image' ); ?>
+						<?php the_post_thumbnail( 'jumpbytetest-featured-image' ); ?>
 					</a>
 					<p>
 					<?php
@@ -261,7 +261,7 @@ function jb_team_shortcode_function($atts) {
 			?>
 			<div class="column" style="<?php echo $view; ?>">
 				<div class="card">
-					<?php  the_post_thumbnail( 'twentyseventeen-featured-image' ); ?>
+					<?php  the_post_thumbnail( 'jumpbytetest-featured-image' ); ?>
 					<!-- <img src="/w3images/team1.jpg" alt="Jane" style="width:100%"> -->
 					<div class="container">
 						<?php the_title( '<h3 class=""><b><a href="' . esc_url( get_permalink() ) . '" rel="bookmark">', '</b></a></h3>' ); ?>
@@ -402,7 +402,55 @@ if( !function_exists('jb_setting') ){
 	function jb_setting(){
        echo "<h1>JumpByte Setting</h1>";
        $post_types = get_post_types();
-       //echo "<pre>";print_r($post_types);echo "</pre>";
+	   //echo "<pre>";print_r($post_types);echo "</pre>";
+	   $post_type_values = array();
+	   if( !empty( get_option('jb_post_types',false) ) && '' != get_option('jb_post_types',false) ){
+		   $post_type_values = get_option('jb_post_types',false);
+	   }
+	   $posttype_text = $_POST['post_type_name'];
+	   
+	   /* Verify if Post Type Name Already Exists */
+	   if( in_array($posttype_text,$post_type_values) ){
+		   echo "Post Type Already Exists";
+	   }else{
+			if( isset( $posttype_text ) && '' != $posttype_text && !empty( $posttype_text ) && strlen(trim($posttype_text)) != 0 ){
+				$post_type_values[] = $posttype_text;
+				update_option('jb_post_types',$post_type_values);
+				echo "Post Type Succesfully Added";
+			}
+	   }
+	   ?>
+	   <form name="post_type_form" method="post">
+		   <input type="text" name="post_type_name">
+		   <input type="submit" name="post_type_submit" value="ADD">
+	   </form>
+	   <script type="text/javascript">
+            jQuery(document).ready(function($) {
+
+                $('.remove_post_type li').live('click',function(){
+                    var post_type_value = $(this).attr('p');
+					alert(post_type_value);
+                });
+                            
+            }); 
+		</script>
+
+			<?php
+		if( !empty( $post_type_values ) && '' != $post_type_values ){
+			foreach( $post_type_values as $values => $value ){
+				$value = ucfirst($value);
+			}
+		}
+
+		if( !empty( $post_type_values ) && '' != $post_type_values ){
+			foreach( $post_type_values as $values => $value ){
+				echo ucfirst($value)."</br>";
+				if( 'four' == $value ){
+					unset($post_type_values[$values]);
+					print_r($post_type_values);
+				}
+			}
+		}
        foreach ($post_types as $post_type => $value) {
 			if( $value != 'post' && $value != 'page' && $value != 'attachment' && $value != 'revision' && $value != 'custom_css' && $value != 'customize_changeset' && $value != 'oembed_cache' && $value != 'nav_menu_item' ){
 
