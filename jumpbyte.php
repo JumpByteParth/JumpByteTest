@@ -48,8 +48,6 @@ function jb_activate_plugin(){
 
 
 /* Filter the single_template with our custom function*/
-//add_filter('single_template', 'my_custom_template', 11);
-//add_filter('single_template', 'my_custom_template');
 if( 'Twenty Sixteen' == wp_get_theme() || 'Twenty Fifteen' == wp_get_theme() ){
 	function my_custom_template($single) {
         global $wp_query, $post;
@@ -145,7 +143,7 @@ function jb_project_shortcode_function($atts) {
 				<div>
 					<?php the_title( '<h3 class=""><b><a href="' . esc_url( get_permalink() ) . '" rel="bookmark">', '</b></a></h3>' ); ?>
 					<a href="<?php the_permalink(); ?>">
-						<?php the_post_thumbnail( 'jumpbytetest-featured-image' ); ?>
+						<?php the_post_thumbnail( 'twentyseventeen-featured-image' ); ?>
 					</a>
 					<p>
 					<?php
@@ -261,7 +259,7 @@ function jb_team_shortcode_function($atts) {
 			?>
 			<div class="column" style="<?php echo $view; ?>">
 				<div class="card">
-					<?php  the_post_thumbnail( 'jumpbytetest-featured-image' ); ?>
+					<?php  the_post_thumbnail( 'twentyseventeen-featured-image' ); ?>
 					<!-- <img src="/w3images/team1.jpg" alt="Jane" style="width:100%"> -->
 					<div class="container">
 						<?php the_title( '<h3 class=""><b><a href="' . esc_url( get_permalink() ) . '" rel="bookmark">', '</b></a></h3>' ); ?>
@@ -320,22 +318,25 @@ add_shortcode('jb-client-shortcode', 'jb_client_shortcode_function');
 
 if( !function_exists('jb_init') ){
 	function jb_init(){
+
 		//update_option( 'jb_post_types', '', $false );
-		
-		//$social_option = unserialize(get_option('jb_post_types',false));
-		$social_option = unserialize(get_option('jb_posttype_backup',false));
 		//$social_option = get_option('sfsi_section6_options',TRUE);
+		//$social_option = unserialize(get_option('jb_post_types',false));
+
+		$social_option = unserialize(get_option('jb_posttype_backup',false));
+		
 		if( '' != $social_option ){
 			echo "<pre>";print_r($social_option);echo "</pre>";
 		}
 		
 	   ?>
 	   <div class="wrapper">
-		<div><h1>JumpByte Overview</h1></div>
+		   <div><h1>JumpByte Overview</h1></div>
 		</div>
+
 	   <?php
 	   $jb_plugin_dir =  dirname(__FILE__);
-	   //echo $jb_plugin_dir;
+
        $post_types = get_post_types();
        echo "<pre>";print_r($post_types);echo "</pre>";
        foreach ($post_types as $post_type => $value) {
@@ -347,119 +348,183 @@ if( !function_exists('jb_init') ){
 }
 
 /*
- * Custom Post type Multiple
+ * Create Custom Post type Multiple
  */
 
 function create_post_type_multiple() {
-	//$post_array = ['one','two','three'];
-	if( !empty( $post_array ) && '' != $post_array ){
-		foreach( $post_array as $parray => $value ){
-			$value = ucfirst( $value );
-			$labels = array(
-				'name'               => _x( $value.'s', 'post type general name', 'jumpbytetest' ),
-				'singular_name'      => _x( $value, 'post type singular name', 'jumpbytetest' ),
-				'menu_name'          => _x( $value, 'admin menu', 'jumpbytetest' ),
-				'name_admin_bar'     => _x( $value.'s', 'add new on admin bar', 'jumpbytetest' ),
-				'add_new'            => _x( 'Add '.$value, $value, 'jumpbytetest' ),
-				'add_new_item'       => __( 'Add New '.$value, 'jumpbytetest' ),
-				'new_item'           => __( 'New '.$value, 'jumpbytetest' ),
-				'edit_item'          => __( 'Edit '.$value, 'jumpbytetest' ),
-				'view_item'          => __( 'View '.$value, 'jumpbytetest' ),
-				'all_items'          => __( 'All '.$value.'s', 'jumpbytetest' ),
-				'search_items'       => __( 'Search ', 'jumpbytetest' ),
-				'parent_item_colon'  => __( 'Parent :', 'jumpbytetest' ),
-				'not_found'          => __( 'No '.$value.' found.', 'jumpbytetest' ),
-				'not_found_in_trash' => __( 'No '.$value.' found in Trash.', 'jumpbytetest' )
-			);
-		
-			$args = array(
-				'labels'             => $labels,
-				'description'        => __( 'Description.', 'jumpbytetest' ),
-				'public'             => true,
-				'publicly_queryable' => true,
-				'show_ui'            => true,
-				'show_in_menu'       => true,
-				'query_var'          => true,
-				'rewrite'            => array( 'slug' => $value ),
-				'taxonomies' => array('post_tag','category'),
-				'capability_type'    => 'post',
-				'has_archive'        => true,
-				'hierarchical'       => false,
-				'menu_position'      => null,
-				'supports'           => array( 'title', 'editor', 'author', 'thumbnail', 'excerpt', 'comments' )
-			);
-		
-			register_post_type( $value, $args );
+
+	//$post_option_array = ['one','two','three'];
+	$post_option_array = array();
+	$post_option_array_lower = array();
+	$all_post_types = get_post_types();
+	$all_post_types_lower = array_map('strtolower', $all_post_types);
+
+	/* Store value of "jb_post_types" WP_OPTION if not empty */
+	if( !empty( get_option('jb_post_types',false) ) && '' != get_option('jb_post_types',false) ){
+		$post_option_array = get_option('jb_post_types',false);
+		$post_option_array_lower = array_map('strtolower', $post_option_array);
+	}
+	/* Check if "jb_post_types" WP_OPTION if not empty -If is empty nothing happen*/
+	if( !empty( $post_option_array ) && '' != $post_option_array ){
+		foreach( $post_option_array as $post_array => $value ){
+			$value_lower = strtolower($value);
+
+			/* Check if current value not exist in all post types */
+			if( !in_array( $posttype_tvalue_lowerext,$all_post_types_lower ) ){
+					$value = ucfirst( $value );
+					$labels = array(
+						'name'               => _x( $value.'s', 'post type general name', 'jumpbytetest' ),
+						'singular_name'      => _x( $value, 'post type singular name', 'jumpbytetest' ),
+						'menu_name'          => _x( $value, 'admin menu', 'jumpbytetest' ),
+						'name_admin_bar'     => _x( $value.'s', 'add new on admin bar', 'jumpbytetest' ),
+						'add_new'            => _x( 'Add '.$value, $value, 'jumpbytetest' ),
+						'add_new_item'       => __( 'Add New '.$value, 'jumpbytetest' ),
+						'new_item'           => __( 'New '.$value, 'jumpbytetest' ),
+						'edit_item'          => __( 'Edit '.$value, 'jumpbytetest' ),
+						'view_item'          => __( 'View '.$value, 'jumpbytetest' ),
+						'all_items'          => __( 'All '.$value.'s', 'jumpbytetest' ),
+						'search_items'       => __( 'Search ', 'jumpbytetest' ),
+						'parent_item_colon'  => __( 'Parent :', 'jumpbytetest' ),
+						'not_found'          => __( 'No '.$value.' found.', 'jumpbytetest' ),
+						'not_found_in_trash' => __( 'No '.$value.' found in Trash.', 'jumpbytetest' )
+					);
+				
+					$args = array(
+						'labels'             => $labels,
+						'description'        => __( 'Description.', 'jumpbytetest' ),
+						'public'             => true,
+						'publicly_queryable' => true,
+						'show_ui'            => true,
+						'show_in_menu'       => true,
+						'query_var'          => true,
+						'rewrite'            => array( 'slug' => $value ),
+						'taxonomies' => array('post_tag','category'),
+						'capability_type'    => 'post',
+						'has_archive'        => true,
+						'hierarchical'       => false,
+						'menu_position'      => null,
+						'supports'           => array( 'title', 'editor', 'author', 'thumbnail', 'excerpt', 'comments' )
+					);
+				
+					register_post_type( $value, $args ); // Register current value post type
+			}
 		}
 	}
-	
 }
 
 add_action( 'init', 'create_post_type_multiple' );
-/* END Custom Post type Multiple*/
+/* END - Create Custom Post type Multiple*/
 
+/* Check if function already Exist */
 if( !function_exists('jb_setting') ){
+	/*
+	 * Function for Jb_Setting pluging page.
+	 */
 	function jb_setting(){
-       echo "<h1>JumpByte Setting</h1>";
-       $post_types = get_post_types();
-	   //echo "<pre>";print_r($post_types);echo "</pre>";
+
+	   echo "<h1>JumpByte Setting</h1>";
+	   /* Add custom post type from backend JumpByte setting */
+	   echo "<h2>Add your Custom post types here:</h2>";
+
+	   /* Initilaize blank Array and Variables*/
 	   $post_type_values = array();
+	   $post_type_values_lower = array();
+	   $posttype_text = '';
+	   $posttype_text_orignal = '';
+
+	   /* Store all post types value */
+	   $all_post_types = get_post_types();
+	   $all_post_types_lower = array_map('strtolower', $all_post_types); // Store all post types value in lower case
+
+	   /* Store value of "jb_post_types" WP_OPTION if not empty */
 	   if( !empty( get_option('jb_post_types',false) ) && '' != get_option('jb_post_types',false) ){
 		   $post_type_values = get_option('jb_post_types',false);
+		   $post_type_values_lower = array_map('strtolower', $post_type_values); // Store all option post types value in lower case
 	   }
-	   $posttype_text = $_POST['post_type_name'];
-	   
-	   /* Verify if Post Type Name Already Exists */
-	   if( in_array($posttype_text,$post_type_values) ){
-		   echo "Post Type Already Exists";
-	   }else{
-			if( isset( $posttype_text ) && '' != $posttype_text && !empty( $posttype_text ) && strlen(trim($posttype_text)) != 0 ){
-				$post_type_values[] = $posttype_text;
-				update_option('jb_post_types',$post_type_values);
-				echo "Post Type Succesfully Added";
+
+	   /* Check if $_POST['post_type_name'] value is set */
+	   if( isset( $_POST['post_type_name'] ) && !empty( $_POST['post_type_name'] ) && '' != $_POST['post_type_name'] && strlen(trim( $_POST['post_type_name'] )) != 0 ){
+		   $posttype_text = strtolower($_POST['post_type_name']);
+		   $posttype_text_orignal = $_POST['post_type_name'];
+	   }
+
+	   /* Check if $_POST['post_type_name'] value is set */
+	   if( !empty( $posttype_text_orignal ) && '' != $posttype_text_orignal && strlen(trim($posttype_text_orignal)) != 0 ){
+
+		   	/* Verify if Post Type Name Already Exists in All post types*/
+			if( !in_array( $posttype_text,$all_post_types_lower ) ){
+
+				/* Verify if Post Type Name Already Exists in All option post types*/
+				if( in_array( $posttype_text,$post_type_values_lower ) ){
+					echo "Post Type Already Exists";
+				}else{
+					$post_type_values[] = $posttype_text_orignal; // Add new value to Option Array.
+					update_option('jb_post_types',$post_type_values);  // Update new array to "jb_post_types" WP_OPTION.
+					echo "Post Type Added Succesfully."; // Success Message.
+					echo "<p><b>Note: </b>Refresh if Post Type not in Dashboard.</p>";
+				}
+			}else{
+				echo "Post Type Already Exists"; // Post Type Name Already Exists in All post types
 			}
+
 	   }
 	   ?>
+	   <!-- Form to add new value to "jb_post_types" WP_OPTION -->
 	   <form name="post_type_form" method="post">
-		   <input type="text" name="post_type_name">
+		   <input type="text" name="post_type_name" placeholder="Enter Your Post Type Name">
 		   <input type="submit" name="post_type_submit" value="ADD">
 	   </form>
-	   <script type="text/javascript">
-            jQuery(document).ready(function($) {
+	   <!-- END - Form to add new value to "jb_post_types" WP_OPTION -->
 
-                $('.remove_post_type li').live('click',function(){
-                    var post_type_value = $(this).attr('p');
-					alert(post_type_value);
-                });
-                            
-            }); 
-		</script>
+		<?php
+		
+		/* Check If request recived to remove Post Type from Option*/
+		if( isset( $_REQUEST['remove_post_type'] ) && '' != $_REQUEST['remove_post_type'] && !empty( $_REQUEST['remove_post_type']  && strlen(trim( $_REQUEST['remove_post_type'] )) != 0) ){
 
-			<?php
-		if( !empty( $post_type_values ) && '' != $post_type_values ){
-			foreach( $post_type_values as $values => $value ){
-				$value = ucfirst($value);
-			}
-		}
+			$remove_post_type = $_REQUEST['remove_post_type']; // Store request value to variable
+			$remove_post_type_lower = strtolower($_REQUEST['remove_post_type']); // Covert variable to lower string
+			
+			/* Check if "jb_post_types" WP_OPTION is not empty -If is empty nothing happen*/
+			if( !empty( $post_type_values ) && '' != $post_type_values ){
+				
+				/* Check if Lower Request string is in "jb_post_types" WP_OPTION lower*/
+				if( in_array($remove_post_type_lower, $post_type_values_lower) ){
+					foreach( $post_type_values as $values => $value ){
+						$value_lower = strtolower($value); // Strore current value to lowercase.
 
-		if( !empty( $post_type_values ) && '' != $post_type_values ){
-			foreach( $post_type_values as $values => $value ){
-				echo ucfirst($value)."</br>";
-				if( 'four' == $value ){
-					unset($post_type_values[$values]);
-					print_r($post_type_values);
+						/* Chek if lower values for Remove request and Current array value are equal */
+						if( $remove_post_type_lower == $value_lower ){
+							unset($post_type_values[$values]);		
+						}
+					}
+					update_option('jb_post_types',$post_type_values); // Update new array to "jb_post_types" WP_OPTION.
 				}
 			}
 		}
-       foreach ($post_types as $post_type => $value) {
-			if( $value != 'post' && $value != 'page' && $value != 'attachment' && $value != 'revision' && $value != 'custom_css' && $value != 'customize_changeset' && $value != 'oembed_cache' && $value != 'nav_menu_item' ){
 
-			}
-       }
+		/* Check if "jb_post_types" WP_OPTION is not empty */
+		if( !empty( $post_type_values ) && '' != $post_type_values ){
+			echo "<table><th>Post Types</th><th>Delete</th>";
+				foreach( $post_type_values as $values => $value ){
+					$value = ucfirst( $value );
+					echo "<tr><td>".$value."</td><td>";
+					echo '<a href="?page=JB_Setting&remove_post_type='.$value.'">Remove</a></br>';
+					echo "</td></tr>";
+				}
+			echo "</table>";
+		}else{
+			echo "<h3>No Post Type Created</h3>";
+			echo "<p><b>Note: </b>Enter your post type name above and Click on ADD Button.</p>";
+		}
 	}
+	/* END - Add custom post type from backend JumpByte setting */
 }
 
+/* Check if function already Exist */
 if( !function_exists('jb_about') ){
+	/*
+	 * Functio for Jb_Aboutr page 
+	 */
 	function jb_about(){
        echo "<h1>About JumpByte	</h1>";
        $post_types = get_post_types();
