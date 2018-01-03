@@ -9,8 +9,8 @@ Version: 1.0
 add_action('admin_menu', 'jb_plugin_setup_menu');
 
 if( !defined( 'ABSPATH' ) ){
-    echo "<h1>No script kiddies please!!!</h1>";
-    exit; // Exit if accessed directly
+	echo "<h1>No script kiddies please!!!</h1>";
+	exit; // Exit if accessed directly
 }
 
 /* plugin install and uninstall hooks */
@@ -24,7 +24,11 @@ function jb_activate_plugin(){
 		add_option('jb_posttype_backup');
 	}
 	if( !get_option('jb_post_types') ){
-		    /* post options */                  
+		add_option('jb_post_types');
+	}
+	/* Example for Add Option with Values.
+	if( !get_option('jb_post_types') ){
+			// post options
 			$options6 = array('sfsi_show_Onposts'=>'no',
 			'sfsi_show_Onbottom'=>'no',
 			'sfsi_icons_postPositon'=>'source',
@@ -40,42 +44,42 @@ function jb_activate_plugin(){
 			'sfsi_rectpinit'=>'yes',
 			'sfsi_rectfbshare'=>'yes'
 		);
-		add_option('jb_post_types',  serialize($options6));
-	}
+		add_option('jb_post_types', serialize($options6));
+	} */
 }
-/* end function  */
+/* END - function */
 
 
 
 /* Filter the single_template with our custom function*/
 if( 'Twenty Sixteen' == wp_get_theme() || 'Twenty Fifteen' == wp_get_theme() ){
 	function my_custom_template($single) {
-        global $wp_query, $post;
-    
-        /* Checks for single template by post type */
-        if ( $post->post_type == 'team' ) {
-            if ( file_exists( dirname( __FILE__ ) . '/single-team.php' ) ) {
+		global $wp_query, $post;
+
+		/* Checks for single template by post type */
+		if ( $post->post_type == 'team' ) {
+			if ( file_exists( dirname( __FILE__ ) . '/single-team.php' ) ) {
 				return dirname( __FILE__ ) . '/single-team.php';
 				exit;
-            }
+			}
 		}
 		if ( $post->post_type == 'client' ) {
-            if ( file_exists( dirname( __FILE__ ) . '/single-client.php' ) ) {
+			if ( file_exists( dirname( __FILE__ ) . '/single-client.php' ) ) {
 				return dirname( __FILE__ ) . '/single-client.php';
 				exit;
-            }
+			}
 		}
 		if ( $post->post_type == 'project' ) {
-            if ( file_exists( dirname( __FILE__ ) . '/single-project.php' ) ) {
+			if ( file_exists( dirname( __FILE__ ) . '/single-project.php' ) ) {
 				return dirname( __FILE__ ) . '/single-project.php';
 				exit;
-            }
-        }
-        return $single;
-    
-    }
-    add_filter('single_template', 'my_custom_template', 99);
-    //remove_filter('single_template','my_custom_template');
+			}
+		}
+		return $single;
+
+		}
+		add_filter('single_template', 'my_custom_template', 99);
+		//remove_filter('single_template','my_custom_template');
 }	
 
 
@@ -121,7 +125,7 @@ function callback_for_setting_up_scripts() {
  */
 function jb_project_shortcode_function($atts) {
 	if( isset( $atts['view'] ) && !empty( $atts['view'] ) && '' != $atts['view'] ){
-		if( 'list' == $atts['view']  ){
+		if( 'list' == $atts['view'] ){
 			$view = 'list-item';
 		}else{
 			$view = 'grid';
@@ -240,7 +244,7 @@ add_shortcode('jb-project-shortcode', 'jb_project_shortcode_function');
  */
 function jb_team_shortcode_function($atts) {
 	if( isset( $atts['view'] ) && !empty( $atts['view'] ) && '' != $atts['view'] ){
-		if( 'list' == $atts['view']  ){
+		if( 'list' == $atts['view'] ){
 			$view = '';
 		}else{
 			$view = 'float: left; width: 33.3%;';
@@ -259,7 +263,7 @@ function jb_team_shortcode_function($atts) {
 			?>
 			<div class="column" style="<?php echo $view; ?>">
 				<div class="card">
-					<?php  the_post_thumbnail( 'twentyseventeen-featured-image' ); ?>
+					<?php	the_post_thumbnail( 'twentyseventeen-featured-image' ); ?>
 					<!-- <img src="/w3images/team1.jpg" alt="Jane" style="width:100%"> -->
 					<div class="container">
 						<?php the_title( '<h3 class=""><b><a href="' . esc_url( get_permalink() ) . '" rel="bookmark">', '</b></a></h3>' ); ?>
@@ -272,7 +276,7 @@ function jb_team_shortcode_function($atts) {
 									<b><?php _e( 'Team Members', 'jumpbytetest' ); ?></b>
 								</p>
 								<?php
-								foreach($selected as $team){
+								foreach( $selected as $team ){
 									$user = get_userdatabylogin($team);
 									$user_id = $user->data->ID;
 									$user_link = get_author_posts_url( $user_id );
@@ -328,22 +332,21 @@ if( !function_exists('jb_init') ){
 		if( '' != $social_option ){
 			echo "<pre>";print_r($social_option);echo "</pre>";
 		}
-		
-	   ?>
-	   <div class="wrapper">
-		   <div><h1>JumpByte Overview</h1></div>
+		?>
+		<div class="wrapper">
+			<div><h1>JumpByte Overview</h1></div>
 		</div>
 
-	   <?php
-	   $jb_plugin_dir =  dirname(__FILE__);
+		<?php
+		$jb_plugin_dir = dirname(__FILE__);
 
-       $post_types = get_post_types();
-       echo "<pre>";print_r($post_types);echo "</pre>";
-       foreach ($post_types as $post_type => $value) {
+		$post_types = get_post_types();
+		echo "<pre>";print_r($post_types);echo "</pre>";
+		foreach ($post_types as $post_type => $value) {
 			if( $value != 'post' && $value != 'page' && $value != 'attachment' && $value != 'revision' && $value != 'custom_css' && $value != 'customize_changeset' && $value != 'oembed_cache' && $value != 'nav_menu_item' ){
 				
 			}
-       }
+		}
 	}
 }
 
@@ -364,7 +367,7 @@ function create_post_type_multiple() {
 		$post_option_array = get_option('jb_post_types',false);
 		$post_option_array_lower = array_map('strtolower', $post_option_array);
 	}
-	/* Check if "jb_post_types" WP_OPTION if not empty -If is empty nothing happen*/
+	/* Check if "jb_post_types" WP_OPTION is not empty - If is empty nothing happen*/
 	if( !empty( $post_option_array ) && '' != $post_option_array ){
 		foreach( $post_option_array as $post_array => $value ){
 			$value_lower = strtolower($value);
@@ -422,36 +425,36 @@ if( !function_exists('jb_setting') ){
 	 */
 	function jb_setting(){
 
-	   echo "<h1>JumpByte Setting</h1>";
-	   /* Add custom post type from backend JumpByte setting */
-	   echo "<h2>Add your Custom post types here:</h2>";
+		echo "<h1>JumpByte Setting</h1>";
+		/* Add custom post type from backend JumpByte setting */
+		echo "<h2>Add your Custom post types here:</h2>";
 
-	   /* Initilaize blank Array and Variables*/
-	   $post_type_values = array();
-	   $post_type_values_lower = array();
-	   $posttype_text = '';
-	   $posttype_text_orignal = '';
+		/* Initilaize blank Array and Variables*/
+		$post_type_values = array();
+		$post_type_values_lower = array();
+		$posttype_text = '';
+		$posttype_text_orignal = '';
 
-	   /* Store all post types value */
-	   $all_post_types = get_post_types();
-	   $all_post_types_lower = array_map('strtolower', $all_post_types); // Store all post types value in lower case
+		/* Store all post types value */
+		$all_post_types = get_post_types();
+		$all_post_types_lower = array_map('strtolower', $all_post_types); // Store all post types value in lower case
 
-	   /* Store value of "jb_post_types" WP_OPTION if not empty */
-	   if( !empty( get_option('jb_post_types',false) ) && '' != get_option('jb_post_types',false) ){
-		   $post_type_values = get_option('jb_post_types',false);
-		   $post_type_values_lower = array_map('strtolower', $post_type_values); // Store all option post types value in lower case
-	   }
+		/* Store value of "jb_post_types" WP_OPTION if not empty */
+		if( !empty( get_option('jb_post_types',false) ) && '' != get_option('jb_post_types',false) ){
+			$post_type_values = get_option('jb_post_types',false);
+			$post_type_values_lower = array_map('strtolower', $post_type_values); // Store all option post types value in lower case
+		}
 
-	   /* Check if $_POST['post_type_name'] value is set */
-	   if( isset( $_POST['post_type_name'] ) && !empty( $_POST['post_type_name'] ) && '' != $_POST['post_type_name'] && strlen(trim( $_POST['post_type_name'] )) != 0 ){
-		   $posttype_text = strtolower($_POST['post_type_name']);
-		   $posttype_text_orignal = $_POST['post_type_name'];
-	   }
+		/* Check if $_POST['post_type_name'] value is set */
+		if( isset( $_POST['post_type_name'] ) && !empty( $_POST['post_type_name'] ) && '' != $_POST['post_type_name'] && strlen(trim( $_POST['post_type_name'] )) != 0 ){
+			$posttype_text = strtolower($_POST['post_type_name']);
+			$posttype_text_orignal = $_POST['post_type_name'];
+		}
 
-	   /* Check if $_POST['post_type_name'] value is set */
-	   if( !empty( $posttype_text_orignal ) && '' != $posttype_text_orignal && strlen(trim($posttype_text_orignal)) != 0 ){
+		/* Check if $_POST['post_type_name'] value is set */
+		if( !empty( $posttype_text_orignal ) && '' != $posttype_text_orignal && strlen(trim($posttype_text_orignal)) != 0 ){
 
-		   	/* Verify if Post Type Name Already Exists in All post types*/
+			/* Verify if Post Type Name Already Exists in All post types*/
 			if( !in_array( $posttype_text,$all_post_types_lower ) ){
 
 				/* Verify if Post Type Name Already Exists in All option post types*/
@@ -467,14 +470,14 @@ if( !function_exists('jb_setting') ){
 				echo "Post Type Already Exists"; // Post Type Name Already Exists in All post types
 			}
 
-	   }
-	   ?>
-	   <!-- Form to add new value to "jb_post_types" WP_OPTION -->
-	   <form name="post_type_form" method="post">
-		   <input type="text" name="post_type_name" placeholder="Enter Your Post Type Name">
-		   <input type="submit" name="post_type_submit" value="ADD">
-	   </form>
-	   <!-- END - Form to add new value to "jb_post_types" WP_OPTION -->
+		}
+		?>
+		<!-- Form to add new value to "jb_post_types" WP_OPTION -->
+		<form name="post_type_form" method="post">
+			<input type="text" name="post_type_name" placeholder="Enter Your Post Type Name">
+			<input type="submit" name="post_type_submit" value="ADD">
+		</form>
+		<!-- END - Form to add new value to "jb_post_types" WP_OPTION -->
 
 		<?php
 		
@@ -498,6 +501,10 @@ if( !function_exists('jb_setting') ){
 						}
 					}
 					update_option('jb_post_types',$post_type_values); // Update new array to "jb_post_types" WP_OPTION.
+					echo "Post Type Removed Succesfully."; // Success Message.
+					echo "<p><b>Note: </b>Refresh if Post Type still in Dashboard.</p>";
+					wp_redirect( '?page=JB_Setting' );
+					exit;
 				}
 			}
 		}
@@ -508,7 +515,7 @@ if( !function_exists('jb_setting') ){
 				foreach( $post_type_values as $values => $value ){
 					$value = ucfirst( $value );
 					echo "<tr><td>".$value."</td><td>";
-					echo '<a href="?page=JB_Setting&remove_post_type='.$value.'">Remove</a></br>';
+					echo '<a href="?page=JB_Setting&remove_post_type='.$value.'">Remove</a></br>'; // Remove link for specific Post Type.
 					echo "</td></tr>";
 				}
 			echo "</table>";
@@ -526,14 +533,14 @@ if( !function_exists('jb_about') ){
 	 * Functio for Jb_Aboutr page 
 	 */
 	function jb_about(){
-       echo "<h1>About JumpByte	</h1>";
-       $post_types = get_post_types();
-       echo "<pre>";print_r($post_types);echo "</pre>";
-       foreach ($post_types as $post_type => $value) {
+		echo "<h1>About JumpByte	</h1>";
+		$post_types = get_post_types();
+		echo "<pre>";print_r($post_types);echo "</pre>";
+		foreach ($post_types as $post_type => $value) {
 			if( $value != 'post' && $value != 'page' && $value != 'attachment' && $value != 'revision' && $value != 'custom_css' && $value != 'customize_changeset' && $value != 'oembed_cache' && $value != 'nav_menu_item' ){
 				
 			}
-       }
+		}
 	}
 }
 
@@ -542,14 +549,14 @@ if( !function_exists('jb_about') ){
  *
  */
 $team_role_add = add_role(
-    'team_contributor',
-    __( 'Team' ),
-    array(
-        'read'         => true,  // true allows this capability
-        'edit_posts'   => true,
-        'delete_posts' => false, // Use false to explicitly deny
-    )
-);
+	'team_contributor',
+	__( 'Team' ),
+		array(
+			'read'			=> true, // true allows this capability
+			'edit_posts'	=> true,
+			'delete_posts'	=> false, // Use false to explicitly deny
+		)
+	);
 
 add_action( 'init', 'create_post_type_team' );
 /**
@@ -558,37 +565,37 @@ add_action( 'init', 'create_post_type_team' );
  */
 function create_post_type_team() {
 	$labels = array(
-		'name'               => _x( 'Teams', 'post type general name', 'jumpbytetest' ),
-		'singular_name'      => _x( 'Team', 'post type singular name', 'jumpbytetest' ),
-		'menu_name'          => _x( 'Teams', 'admin menu', 'jumpbytetest' ),
-		'name_admin_bar'     => _x( 'Teams', 'add new on admin bar', 'jumpbytetest' ),
-		'add_new'            => _x( 'Add New', 'team', 'jumpbytetest' ),
-		'add_new_item'       => __( 'Add New Team', 'jumpbytetest' ),
-		'new_item'           => __( 'New Team', 'jumpbytetest' ),
-		'edit_item'          => __( 'Edit Team', 'jumpbytetest' ),
-		'view_item'          => __( 'View Team', 'jumpbytetest' ),
-		'all_items'          => __( 'All Teams Members', 'jumpbytetest' ),
-		'search_items'       => __( 'Search ', 'jumpbytetest' ),
-		'parent_item_colon'  => __( 'Parent :', 'jumpbytetest' ),
-		'not_found'          => __( 'No Team Member found.', 'jumpbytetest' ),
-		'not_found_in_trash' => __( 'No Team Member found in Trash.', 'jumpbytetest' )
+		'name'				=> _x( 'Teams', 'post type general name', 'jumpbytetest' ),
+		'singular_name'		=> _x( 'Team', 'post type singular name', 'jumpbytetest' ),
+		'menu_name'			=> _x( 'Teams', 'admin menu', 'jumpbytetest' ),
+		'name_admin_bar'	=> _x( 'Teams', 'add new on admin bar', 'jumpbytetest' ),
+		'add_new'			=> _x( 'Add New', 'team', 'jumpbytetest' ),
+		'add_new_item'		=> __( 'Add New Team', 'jumpbytetest' ),
+		'new_item'			=> __( 'New Team', 'jumpbytetest' ),
+		'edit_item'			=> __( 'Edit Team', 'jumpbytetest' ),
+		'view_item'			=> __( 'View Team', 'jumpbytetest' ),
+		'all_items'			=> __( 'All Teams Members', 'jumpbytetest' ),
+		'search_items'		=> __( 'Search ', 'jumpbytetest' ),
+		'parent_item_colon'	=> __( 'Parent :', 'jumpbytetest' ),
+		'not_found'			=> __( 'No Team Member found.', 'jumpbytetest' ),
+		'not_found_in_trash'=> __( 'No Team Member found in Trash.', 'jumpbytetest' )
 	);
 
 	$args = array(
-		'labels'             => $labels,
-                'description'        => __( 'Description.', 'jumpbytetest' ),
-		'public'             => true,
-		'publicly_queryable' => true,
-		'show_ui'            => true,
-		'show_in_menu'       => true,
-		'query_var'          => true,
-		'rewrite'            => array( 'slug' => 'Team' ),
-		'taxonomies' => array('post_tag','category'),
-		'capability_type'    => 'post',
-		'has_archive'        => true,
-		'hierarchical'       => false,
-		'menu_position'      => null,
-		'supports'           => array( 'title', 'editor', 'author', 'thumbnail', 'excerpt', 'comments' )
+		'labels'				=> $labels,
+		'description'			=> __( 'Description.', 'jumpbytetest' ),
+		'public'				=> true,
+		'publicly_queryable'	=> true,
+		'show_ui'				=> true,
+		'show_in_menu'			=> true,
+		'query_var'				=> true,
+		'rewrite'				=> array( 'slug' => 'Team' ),
+		'taxonomies'			=> array('post_tag','category'),
+		'capability_type'		=> 'post',
+		'has_archive'			=> true,
+		'hierarchical'			=> false,
+		'menu_position'			=> null,
+		'supports'				=> array( 'title', 'editor', 'author', 'thumbnail', 'excerpt', 'comments' )
 	);
 
 	register_post_type( 'team', $args );
@@ -601,37 +608,37 @@ add_action( 'init', 'create_post_type_project' );
  */
 function create_post_type_project() {
 	$labels = array(
-		'name'               => _x( 'Projects', 'post type general name', 'jumpbytetest' ),
-		'singular_name'      => _x( 'Project', 'post type singular name', 'jumpbytetest' ),
-		'menu_name'          => _x( 'Projects', 'admin menu', 'jumpbytetest' ),
-		'name_admin_bar'     => _x( 'Project', 'add new on admin bar', 'jumpbytetest' ),
-		'add_new'            => _x( 'Add New Project', 'project', 'jumpbytetest' ),
-		'add_new_item'       => __( 'Add New Project', 'jumpbytetest' ),
-		'new_item'           => __( 'New Project', 'jumpbytetest' ),
-		'edit_item'          => __( 'Edit Project', 'jumpbytetest' ),
-		'view_item'          => __( 'View Project', 'jumpbytetest' ),
-		'all_items'          => __( 'All Projects', 'jumpbytetest' ),
-		'search_items'       => __( 'Search Projects', 'jumpbytetest' ),
-		'parent_item_colon'  => __( 'Parent Projects:', 'jumpbytetest' ),
-		'not_found'          => __( 'No Projects found.', 'jumpbytetest' ),
-		'not_found_in_trash' => __( 'No Projects found in Trash.', 'jumpbytetest' )
+		'name'				=> _x( 'Projects', 'post type general name', 'jumpbytetest' ),
+		'singular_name'		=> _x( 'Project', 'post type singular name', 'jumpbytetest' ),
+		'menu_name'			=> _x( 'Projects', 'admin menu', 'jumpbytetest' ),
+		'name_admin_bar'	=> _x( 'Project', 'add new on admin bar', 'jumpbytetest' ),
+		'add_new'			=> _x( 'Add New Project', 'project', 'jumpbytetest' ),
+		'add_new_item'		=> __( 'Add New Project', 'jumpbytetest' ),
+		'new_item'			=> __( 'New Project', 'jumpbytetest' ),
+		'edit_item'			=> __( 'Edit Project', 'jumpbytetest' ),
+		'view_item'			=> __( 'View Project', 'jumpbytetest' ),
+		'all_items'			=> __( 'All Projects', 'jumpbytetest' ),
+		'search_items'		=> __( 'Search Projects', 'jumpbytetest' ),
+		'parent_item_colon'	=> __( 'Parent Projects:', 'jumpbytetest' ),
+		'not_found'			=> __( 'No Projects found.', 'jumpbytetest' ),
+		'not_found_in_trash'=> __( 'No Projects found in Trash.', 'jumpbytetest' )
 	);
 
 	$args = array(
-		'labels'             => $labels,
-                'description'        => __( 'Description.', 'jumpbytetest' ),
-		'public'             => true,
-		'publicly_queryable' => true,
-		'show_ui'            => true,
-		'show_in_menu'       => true,
-		'query_var'          => true,
-		'rewrite'            => array( 'slug' => 'project' ),
-		'taxonomies' => array('post_tag','category'),
-		'capability_type'    => 'post',
-		'has_archive'        => true,
-		'hierarchical'       => false,
-		'menu_position'      => null,
-		'supports'           => array( 'title', 'editor', 'author', 'thumbnail', 'excerpt', 'comments' )
+		'labels'			=> $labels,
+		'description'		=> __( 'Description.', 'jumpbytetest' ),
+		'public'			=> true,
+		'publicly_queryable'=> true,
+		'show_ui'			=> true,
+		'show_in_menu'		=> true,
+		'query_var'			=> true,
+		'rewrite'			=> array( 'slug' => 'project' ),
+		'taxonomies'		=> array('post_tag','category'),
+		'capability_type'	=> 'post',
+		'has_archive'		=> true,
+		'hierarchical'		=> false,
+		'menu_position'		=> null,
+		'supports'			=> array( 'title', 'editor', 'author', 'thumbnail', 'excerpt', 'comments' )
 	);
 
 	register_post_type( 'project', $args );
@@ -662,7 +669,7 @@ function create_post_type_client() {
 
 	$args = array(
 		'labels'             => $labels,
-                'description'        => __( 'Description.', 'jumpbytetest' ),
+		'description'        => __( 'Description.', 'jumpbytetest' ),
 		'public'             => true,
 		'publicly_queryable' => true,
 		'show_ui'            => true,
@@ -693,8 +700,8 @@ function cd_meta_box_cb(){
 	$selected = get_post_meta($post_id,'team_list_meta',TRUE);
 	//print_r($selected);
 	$args = array(
-		'blog_id'      => $GLOBALS['blog_id'],
-		'role'         => 'team_contributor',
+		'blog_id'	=> $GLOBALS['blog_id'],
+		'role'		=> 'team_contributor',
 		);
 	$team_users = get_users( $args );
 	$total = count($team_users);
@@ -715,13 +722,13 @@ function cd_meta_box_cb(){
 add_action( 'save_post', 'cd_meta_box_save' );
 function cd_meta_box_save( $post_id )
 {
-    if( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) return;
+	if( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) return;
 
-    if( !current_user_can( 'edit_post' ) ) return;
-    
-    if( !empty($_POST['team_list']) && '' != $_POST['team_list'] ){
-    	update_post_meta( $post_id, 'team_list_meta', $_POST['team_list'] );
-    }
+	if( !current_user_can( 'edit_post' ) ) return;
+
+	if( !empty($_POST['team_list']) && '' != $_POST['team_list'] ){
+		update_post_meta( $post_id, 'team_list_meta', $_POST['team_list'] );
+	}
 }
 /* END - Meta box for Team Members in Team Post Type*/
 
@@ -738,10 +745,10 @@ function teams_meta_box_cb(){
 	$selected = get_post_meta($post_id,'project_team_list_meta',TRUE);
 
 	$args = array(
-        'post_status' => 'publish', 
-        'post_type' => 'team' ,
-    );
-    $query = new WP_Query($args);
+		'post_status' => 'publish', 
+		'post_type' => 'team' ,
+	);
+	$query = new WP_Query($args);
 	$teams = $query->posts;
 	$teams_count = $query->post_count;
 	?>
@@ -761,13 +768,13 @@ function teams_meta_box_cb(){
 
 add_action( 'save_post', 'teams_meta_box_save' );
 function teams_meta_box_save( $post_id ){
-    if( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) return;
+	if( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) return;
 
-    if( !current_user_can( 'edit_post' ) ) return;
+	if( !current_user_can( 'edit_post' ) ) return;
 
-    if( !empty($_POST['project_team_list']) && '' != $_POST['project_team_list'] ){
-    	update_post_meta( $post_id, 'project_team_list_meta', $_POST['project_team_list'] );
-    }
+	if( !empty($_POST['project_team_list']) && '' != $_POST['project_team_list'] ){
+		update_post_meta( $post_id, 'project_team_list_meta', $_POST['project_team_list'] );
+	}
 }
 /* END - Meta box for Team List(varname) in Project Post Type*/
 
@@ -789,10 +796,10 @@ function project_meta_box_cb(){
 	$selected = get_post_meta($post_id,'project_list_meta',TRUE);
 
 	$args = array(
-        'post_status' => 'publish', 
-        'post_type' => 'project' ,
-    );
-    $query = new WP_Query($args);
+		'post_status' => 'publish', 
+		'post_type' => 'project' ,
+	);
+	$query = new WP_Query($args);
 	$teams = $query->posts;
 	$teams_count = $query->post_count;
 	?>
@@ -812,17 +819,17 @@ function project_meta_box_cb(){
 
 add_action( 'save_post', 'project_meta_box_save' );
 function project_meta_box_save( $post_id ){
-    if( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) return;
+	if( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) return;
 
-    if( !current_user_can( 'edit_post' ) ) return;
+	if( !current_user_can( 'edit_post' ) ) return;
 
-    if( !empty($_POST['project_list']) && '' != $_POST['project_list'] ){
-    	update_post_meta( $post_id, 'project_list_meta', $_POST['project_list'] );
-    }
+	if( !empty($_POST['project_list']) && '' != $_POST['project_list'] ){
+		update_post_meta( $post_id, 'project_list_meta', $_POST['project_list'] );
+	}
 
-    if( !empty($_POST['client_url']) && '' != $_POST['client_url'] ){
-    	update_post_meta( $post_id, 'client_url_meta', $_POST['client_url'] );
-    }    
+	if( !empty($_POST['client_url']) && '' != $_POST['client_url'] ){
+		update_post_meta( $post_id, 'client_url_meta', $_POST['client_url'] );
+	} 
 }
 /* END - Meta box for Project List in clients Post Type*/
 
@@ -834,11 +841,11 @@ add_action( 'wp_ajax_demo-pagination-load-posts', 'cvf_demo_pagination_load_post
 add_action( 'wp_ajax_nopriv_demo-pagination-load-posts', 'cvf_demo_pagination_load_posts' ); 
 
 function cvf_demo_pagination_load_posts() {
-    global $wpdb;
-    // Set default variables
+	global $wpdb;
+	// Set default variables
 	$msg = '';
 	if( isset( $_POST['ptype'] ) && !empty( $_POST['ptype'] ) && '' != $_POST['ptype'] ){
-		if( 'client' == $_POST['ptype']  ){
+		if( 'client' == $_POST['ptype'] ){
 			$ptype = 'client';
 		}elseif( 'project' == $_POST['ptype'] ){
 			$ptype = 'project';
@@ -853,135 +860,129 @@ function cvf_demo_pagination_load_posts() {
 		$ptype = 'project';
 	}
 
-    if( isset( $_POST['page'] ) ){
-        // Sanitize the received page   
-        $page = sanitize_text_field($_POST['page']);
-        $cur_page = $page;
-        $page -= 1;
-        // Set the number of results to display
-        $per_page = 1;
-        $previous_btn = true;
-        $next_btn = true;
-        $first_btn = true;
-        $last_btn = true;
-        $start = $page * $per_page;
+	if( isset( $_POST['page'] ) ){
+		// Sanitize the received page.
+		$page = sanitize_text_field($_POST['page']);
+		$cur_page = $page;
+		$page -= 1;
+		// Set the number of results to display
+		$per_page = 1;
+		$previous_btn = true;
+		$next_btn = true;
+		$first_btn = true;
+		$last_btn = true;
+		$start = $page * $per_page;
 
-        // Set the table where we will be querying data
-        $table_name = $wpdb->prefix . "posts";
+		// Set the table where we will be querying data
+		$table_name = $wpdb->prefix . "posts";
 
-        // Query the necessary posts
-        //$all_blog_posts = $wpdb->get_results($wpdb->prepare("SELECT * FROM " . $table_name . " WHERE post_type = 'post' AND post_status = 'publish' ORDER BY post_date DESC LIMIT %d, %d", $start, $per_page ) );
+		// Query the necessary posts
+		//$all_blog_posts = $wpdb->get_results($wpdb->prepare("SELECT * FROM " . $table_name . " WHERE post_type = 'post' AND post_status = 'publish' ORDER BY post_date DESC LIMIT %d, %d", $start, $per_page ) );
 
-        // At the same time, count the number of queried posts
-        //$count = $wpdb->get_var($wpdb->prepare("SELECT COUNT(ID) FROM " . $table_name . " WHERE post_type = 'post' AND post_status = 'publish'", array() ) );
+		// At the same time, count the number of queried posts
+		//$count = $wpdb->get_var($wpdb->prepare("SELECT COUNT(ID) FROM " . $table_name . " WHERE post_type = 'post' AND post_status = 'publish'", array() ) );
 
-        /**
-         * Use WP_Query:
-         */
-        $all_blog_posts = new WP_Query(
-            array(
-                'post_type'         => $ptype,
-                'post_status '      => 'publish',
-                'posts_per_page'    => $per_page,
-                'offset'            => $start
-            )
-        );
+		/**
+		 * Use WP_Query:
+		 */
+		$all_blog_posts = new WP_Query(
+			array(
+				'post_type'			=> $ptype,
+				'post_status '		=> 'publish',
+				'posts_per_page'	=> $per_page,
+				'offset'			=> $start
+			)
+		);
 
-        $count = new WP_Query(
-            array(
-                'post_type'         => $ptype,
-                'post_status '      => 'publish',
-                'posts_per_page'    => -1
-            )
-        );
+		$count = new WP_Query(
+			array(
+				'post_type'			=> $ptype,
+				'post_status '		=> 'publish',
+				'posts_per_page'	=> -1
+			)
+		);
 		//echo "<pre>";print_r($count);echo "</pre>";
 		//echo "<pre>";print_r($all_blog_posts->posts);echo "</pre>";
 
 		// Loop into all the posts	
-        foreach($all_blog_posts->posts as $post): 
-            // Set the desired output into a variable
-            $msg .= '
-            <div class = "col-md-12">       
-                <h2><b><a href="' . get_permalink($post->ID) . '">' . $post->post_title . '</a></b></h2>
-                <p>' . $post->post_excerpt . '</p>
-                <p>' . $post->post_content . '</p>
-            </div>';
+		foreach($all_blog_posts->posts as $post): 
+			// Set the desired output into a variable
+			$msg .= '
+			<div class = "col-md-12">
+				<h2><b><a href="' . get_permalink($post->ID) . '">' . $post->post_title . '</a></b></h2>
+				<p>' . $post->post_excerpt . '</p>
+				<p>' . $post->post_content . '</p>
+			</div>';
+		endforeach;
 
-        endforeach;
+		// Optional, wrap the output into a container
+		$msg = "<div class='cvf-universal-content'>" . $msg . "</div><br class = 'clear' />";
 
-        // Optional, wrap the output into a container
-        $msg = "<div class='cvf-universal-content'>" . $msg . "</div><br class = 'clear' />";
+		// This is where the magic happens
+		$no_of_paginations = ceil($count->post_count / $per_page);
 
-        // This is where the magic happens
-        $no_of_paginations = ceil($count->post_count / $per_page);
+		if ($cur_page >= 7) {
+			$start_loop = $cur_page - 3;
+			if ($no_of_paginations > $cur_page + 3)
+				$end_loop = $cur_page + 3;
+			else if ($cur_page <= $no_of_paginations && $cur_page > $no_of_paginations - 6) {
+				$start_loop = $no_of_paginations - 6;
+				$end_loop = $no_of_paginations;
+			} else {
+				$end_loop = $no_of_paginations;
+			}
+		} else {
+			$start_loop = 1;
+			if ($no_of_paginations > 7)
+				$end_loop = 7;
+			else
+				$end_loop = $no_of_paginations;
+		}
 
-        if ($cur_page >= 7) {
-            $start_loop = $cur_page - 3;
-            if ($no_of_paginations > $cur_page + 3)
-                $end_loop = $cur_page + 3;
-            else if ($cur_page <= $no_of_paginations && $cur_page > $no_of_paginations - 6) {
-                $start_loop = $no_of_paginations - 6;
-                $end_loop = $no_of_paginations;
-            } else {
-                $end_loop = $no_of_paginations;
-            }
-        } else {
-            $start_loop = 1;
-            if ($no_of_paginations > 7)
-                $end_loop = 7;
-            else
-                $end_loop = $no_of_paginations;
-        }
+		// Pagination Buttons logic.
+		$pag_container .= "<div class='cvf-universal-pagination'><ul>";
 
-        // Pagination Buttons logic     
-        $pag_container .= "
-        <div class='cvf-universal-pagination'>
-            <ul>";
+		if ($first_btn && $cur_page > 1) {
+			$pag_container .= "<li p='1' class='active'>First</li>";
+		} else if ($first_btn) {
+			$pag_container .= "<li p='1' class='inactive'>First</li>";
+		}
 
-        if ($first_btn && $cur_page > 1) {
-            $pag_container .= "<li p='1' class='active'>First</li>";
-        } else if ($first_btn) {
-            $pag_container .= "<li p='1' class='inactive'>First</li>";
-        }
+		if ($previous_btn && $cur_page > 1) {
+			$pre = $cur_page - 1;
+			$pag_container .= "<li p='$pre' class='active'>Previous</li>";
+		} else if ($previous_btn) {
+			$pag_container .= "<li class='inactive'>Previous</li>";
+		}
+		for ($i = $start_loop; $i <= $end_loop; $i++) {
+			if ($cur_page == $i)
+				$pag_container .= "<li p='$i' class = 'selected' >{$i}</li>";
+			else
+				$pag_container .= "<li p='$i' class='active'>{$i}</li>";
+		}
 
-        if ($previous_btn && $cur_page > 1) {
-            $pre = $cur_page - 1;
-            $pag_container .= "<li p='$pre' class='active'>Previous</li>";
-        } else if ($previous_btn) {
-            $pag_container .= "<li class='inactive'>Previous</li>";
-        }
-        for ($i = $start_loop; $i <= $end_loop; $i++) {
+		if ($next_btn && $cur_page < $no_of_paginations) {
+			$nex = $cur_page + 1;
+			$pag_container .= "<li p='$nex' class='active'>Next</li>";
+		} else if ($next_btn) {
+			$pag_container .= "<li class='inactive'>Next</li>";
+		}
 
-            if ($cur_page == $i)
-                $pag_container .= "<li p='$i' class = 'selected' >{$i}</li>";
-            else
-                $pag_container .= "<li p='$i' class='active'>{$i}</li>";
-        }
+		if ($last_btn && $cur_page < $no_of_paginations) {
+			$pag_container .= "<li p='$no_of_paginations' class='active'>Last</li>";
+		} else if ($last_btn) {
+			$pag_container .= "<li p='$no_of_paginations' class='inactive'>Last</li>";
+		}
 
-        if ($next_btn && $cur_page < $no_of_paginations) {
-            $nex = $cur_page + 1;
-            $pag_container .= "<li p='$nex' class='active'>Next</li>";
-        } else if ($next_btn) {
-            $pag_container .= "<li class='inactive'>Next</li>";
-        }
+		$pag_container = $pag_container . "</ul></div>";
 
-        if ($last_btn && $cur_page < $no_of_paginations) {
-            $pag_container .= "<li p='$no_of_paginations' class='active'>Last</li>";
-        } else if ($last_btn) {
-            $pag_container .= "<li p='$no_of_paginations' class='inactive'>Last</li>";
-        }
+		// We echo the final output
+		echo 
+		'<div class = "cvf-pagination-content">' . $msg . '</div>' . 
+		'<div class = "cvf-pagination-nav">' . $pag_container . '</div>';
 
-        $pag_container = $pag_container . "
-            </ul>
-        </div>";
-
-        // We echo the final output
-        echo 
-        '<div class = "cvf-pagination-content">' . $msg . '</div>' . 
-        '<div class = "cvf-pagination-nav">' . $pag_container . '</div>';
-
-    }
-    // Always exit to avoid further execution
+	}
+	// Always exit to avoid further execution
 	exit();
 }
 
@@ -990,7 +991,7 @@ function cvf_demo_pagination_load_posts() {
  */
 function jb_ajax_shortcode_function($atts) {
 	if( isset( $atts['ptype'] ) && !empty( $atts['ptype'] ) && '' != $atts['ptype'] ){
-		if( 'client' == $atts['ptype']  ){
+		if( 'client' == $atts['ptype'] ){
 			$ptype = 'client';
 		}elseif( 'project' == $atts['ptype'] ){
 			$ptype = 'project';
@@ -1006,57 +1007,56 @@ function jb_ajax_shortcode_function($atts) {
 	}
 	?>
 	<section id="primary">
-        <div id="content" role="main">
-        <div class="col-md-12 content">
-            <div class = "inner-box content no-right-margin darkviolet">
-                <script type="text/javascript">
-					jQuery(document).ready(function($) {
-						// This is required for AJAX to work on our page
-						var ajaxurl = '<?php echo admin_url('admin-ajax.php'); ?>';
+		<div id="content" role="main">
+			<div class="col-md-12 content">
+				<div class = "inner-box content no-right-margin darkviolet">
+					<script type="text/javascript">
+						jQuery(document).ready(function($) {
+							// This is required for AJAX to work on our page
+							var ajaxurl = '<?php echo admin_url('admin-ajax.php'); ?>';
 
-						function cvf_load_all_posts(page){
-							// Start the transition
-							$(".cvf_pag_loading").fadeIn().css('background','#ccc');
+							function cvf_load_all_posts(page){
+								// Start the transition
+								$(".cvf_pag_loading").fadeIn().css('background','#ccc');
 
-							// Data to receive from our server
-							// the value in 'action' is the key that will be identified by the 'wp_ajax_' hook 
-							var data = {
-								page: page,
-								ptype: '<?php echo $ptype; ?>',
-								action: "demo-pagination-load-posts"
-							};
+								// Data to receive from our server
+								// the value in 'action' is the key that will be identified by the 'wp_ajax_' hook 
+								var data = {
+									page: page,
+									ptype: '<?php echo $ptype; ?>',
+									action: "demo-pagination-load-posts"
+								};
 
-							// Send the data
-							$.post(ajaxurl, data, function(response) {
-								// If successful Append the data into our html container
-								$(".cvf_universal_container").html(response);
-								// End the transition
-								$(".cvf_pag_loading").css({'background':'none', 'transition':'all 1s ease-out'});
+								// Send the data
+								$.post(ajaxurl, data, function(response) {
+									// If successful Append the data into our html container
+									$(".cvf_universal_container").html(response);
+									// End the transition
+									$(".cvf_pag_loading").css({'background':'none', 'transition':'all 1s ease-out'});
+								});
+							}
+
+							// Load page 1 as the default
+							cvf_load_all_posts(1);
+
+							// Handle the clicks
+							$('.cvf_universal_container .cvf-universal-pagination li.active').live('click',function(){
+								var page = $(this).attr('p');
+								cvf_load_all_posts(page);
+
 							});
-						}
-
-						// Load page 1 as the default
-						cvf_load_all_posts(1);
-
-						// Handle the clicks
-						$('.cvf_universal_container .cvf-universal-pagination li.active').live('click',function(){
-							var page = $(this).attr('p');
-							cvf_load_all_posts(page);
 
 						});
-
-					});
-                </script>
-                <div class = "cvf_pag_loading">
-                    <div class = "cvf_universal_container">
-                        <div class="cvf-universal-content"></div>
-                    </div>
-                </div>
-
-            </div>      
-        </div>
-        </div><!-- #content -->
-    </section><!-- #primary -->
+					</script>
+					<div class = "cvf_pag_loading">
+						<div class = "cvf_universal_container">
+							<div class="cvf-universal-content"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div><!-- #content -->
+	</section><!-- #primary -->
 	<?php
 } 
 add_shortcode('jb-ajax-shortcode', 'jb_ajax_shortcode_function');
